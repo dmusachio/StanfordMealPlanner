@@ -1,0 +1,1169 @@
+
+<html>
+  <head>
+    <title>Meal Planner</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      type="text/javascript"
+      src="http://epilog.stanford.edu/javascript/epilog.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="http://worksheets.stanford.edu/javascript/worksheets.js"
+    ></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            overflow: auto; /* Changed from hidden to auto to make the body scrollable */
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://logodownload.org/wp-content/uploads/2021/04/stanford-university-logo-3.png') no-repeat center center fixed;
+            background-size: contain;
+            opacity: 0.5;
+            z-index: -1;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* semi-transparent white */
+            padding: 20px;
+            border-radius: 10px;
+            margin: auto;
+            width: 50%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        .meal-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .meal-option {
+            margin: 10px;
+            flex-grow: 1;
+            text-align: center;
+        }
+        h2 {
+            color: #8C1515; /* Stanford red */
+            text-align: center;
+        }
+        input[type=button], select {
+            background-color: #8C1515;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        #mealPlanResult {
+            background-color: white;
+            border: 1px solid #8C1515; /* Stanford Red */
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .header {
+            background-color: #8C1515; /* Stanford Red */
+            color: white;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+            font-size: 18px;
+            text-align: center;
+            display:flex;
+            justify-content: space-around;
+            align-items: center;
+
+        }
+        .meal-content {
+            padding: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        fieldset {
+            border: 2px solid #8C1515;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body id="page" onload="initialize()">
+    <center>
+
+    <div class="container">
+        <h2>Stanford Meal Planner</h2>
+            <fieldset>
+                <div class="meal-options">
+                        <div class="meal-option">
+                            <input type="checkbox" id="nopref" onChange="modcheck(this)">
+                            <label for="nopref">No Preference</label>
+                        </div>
+                        <div class="meal-option">
+                            <input type="checkbox" id="vegetarian" onChange="modcheck(this)">
+                            <label for="vegetarian">Vegetarian</label>
+                        </div>
+                        <div class="meal-option">
+                            <input type="checkbox" id="vegan" onChange="modcheck(this)">
+                            <label for="vegan">Vegan</label>
+                        </div>
+                        <div the="meal-option">
+                            <input type="checkbox" id="glutenFree" onChange="modcheck(this)">
+                            <label for="glutenFree">Gluten Free</label>
+                        </div>
+                        <div class="meal-option">
+                            <input type="checkbox" id="halal" onChange="modcheck(this)">
+                            <label for="halal">Halal</label>
+                        </div>
+                        <div class="meal-option">
+                            <input type="checkbox" id="lowCarb" onChange="modcheck(this)">
+                            <label for="lowCarb">Low Carb</label>
+                        </div>
+                        <div class="meal-option">
+                            <input type="checkbox" id="highCarb" onChange="modcheck(this)">
+                            <label for="highCarb">High Carb</label>
+                        </div>
+                </div>
+            </fieldset>
+            <table cellspacing="0" border="1">
+              <tr>
+                <th style="background-color: #eeeeee">Day</th>
+                <th style="background-color: #eeeeee">Dining Hall</th>
+                <th style="background-color: #eeeeee">Meal Plan Results Hall</th>
+
+              </tr>
+              <tr>
+                <th style="background-color: #eeeeee">Monday</th>
+                <td>
+                  <select
+                    id="event(monday)"
+                    style="width: 160px" /* Changed width to 160px */
+                    onchange="modselector(this)"
+                  >
+                    <option value="unknown"></option>
+                      <option value="arrillaga">Arillaga</option>
+                      <option value="branner">Branner</option>
+                      <option value="casper">Casper</option>
+                      <option value="evgr">Evgr</option>
+                      <option value="flomo">Flomo</option>
+                      <option value="lakeside">Lakeside</option>
+                      <option value="ricker">Ricker</option>
+                      <option value="stern">Stern</option>
+                      <option value="wilbur">Wilbur</option>
+                  </select>
+                </td>
+                <td>
+                  <div id="mealPBox(monday)" class="meal-content">
+                    <strong>Meals:&nbsp;</strong>
+                    <u id="mealP(monday)" style="text-decoration: none;">
+                    </u>
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <th style="background-color: #eeeeee">Tuesday</th>
+                <td>
+                  <select
+                    id="event(tuesday)"
+                    style="width: 160px" /* Changed width to 160px */
+                    onchange="modselector(this)"
+                  >
+                    <option value="unknown"></option>
+                      <option value="arrillaga">Arillaga</option>
+                      <option value="branner">Branner</option>
+                      <option value="casper">Casper</option
+                      <option value="evgr">Evgr</option>
+                      <option value="flomo">Flomo</option>
+                      <option value="lakeside">Lakeside</option>
+                      <option value="ricker">Ricker</option>
+                      <option value="stern">Stern</option>
+                      <option value="wilbur">Wilbur</option>
+                  </select>
+                </td>
+                <td>
+                  <div id="mealPBox(tuesday)"class="meal-content">
+                    <strong>Meals:&nbsp;</strong>
+                    <u id="mealP(tuesday)" style="text-decoration: none;">
+                    </u>
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <th style="background-color: #eeeeee">Wednesday</th>
+                <td>
+                  <select
+                    id="event(wednesday)"
+                    style="width: 160px" /* Changed width to 160px */
+                    onchange="modselector(this)"
+                  >
+                    <option value="unknown"></option>
+                      <option value="arrillaga">Arillaga</option>
+                      <option value="branner">Branner</option>
+                      <option value="casper">Casper</option>
+                      <option value="evgr">Evgr</option>
+                      <option value="flomo">Flomo</option>
+                      <option value="lakeside">Lakeside</option>
+                      <option value="ricker">Ricker</option>
+                      <option value="stern">Stern</option>
+                      <option value="wilbur">Wilbur</option>
+                  </select>
+                </td>
+                <td>
+                  <div id="mealPBox(wednesday)"class="meal-content">
+                    <strong>Meals:&nbsp;</strong>
+                    <u id="mealP(wednesday)" style="text-decoration: none;">
+                    </u>
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <th style="background-color: #eeeeee">Thursday</th>
+                <td>
+                  <select
+                    id="event(thursday)"
+                    style="width: 160px" /* Changed width to 160px */
+                    onchange="modselector(this)"
+                  >
+                    <option value="unknown"></option>
+                      <option value="arrillaga">Arillaga</option>
+                      <option value="branner">Branner</option>
+                      <option value="casper">Casper</option>
+                      <option value="evgr">Evgr</option>
+                      <option value="flomo">Flomo</option>
+                      <option value="lakeside">Lakeside</option>
+                      <option value="ricker">Ricker</option>
+                      <option value="stern">Stern</option>
+                      <option value="wilbur">Wilbur</option>
+                  </select
+                </td>
+                <td>
+                  <div id="mealPBox(thursday)"class="meal-content">
+                    <strong>Meals:&nbsp;</strong>
+                    <u id="mealP(thursday)" style="text-decoration: none;">
+                    </u>
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <th style="background-color: #eeeeee">Friday</th>
+                <td>
+                  <select
+                    id="event(friday)"
+                    style="width: 160px" /* Changed width to 160px */
+                    onchange="modselector(this)"
+                  >
+                    <option value="unknown"></option>
+                      <option value="arrillaga">Arillaga</option>
+                      <option value="branner">Branner</option>
+                      <option value="casper">Casper</option>
+                      <option value="evgr">Evgr</option>
+                      <option value="flomo">Flomo</option>
+                      <option value="lakeside">Lakeside</option>
+                      <option value="ricker">Ricker</option>
+                      <option value="stern">Stern</option>
+                      <option value="wilbur">Wilbur</option>
+                  </select
+                </td>
+                <td>
+                  <div id="mealPBox(friday)"class="meal-content">
+                    <strong>Meals:&nbsp;</strong>
+                    <u id="mealP(friday)" style="text-decoration: none;">
+                    </u>
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <th style="background-color: #eeeeee">Saturday</th>
+                <td>
+                  <select
+                    id="event(saturday)"
+                    style="width: 160px" /* Changed width to 160px */
+                    onchange="modselector(this)"
+                  >
+                    <option value="unknown"></option>
+                      <option value="arrillaga">Arillaga</option>
+                      <option value="branner">Branner</option>
+                      <option value="casper">Casper</option>
+                      <option value="evgr">Evgr</option>
+                      <option value="flomo">Flomo</option>
+                      <option value="lakeside">Lakeside</option>
+                      <option value="ricker">Ricker</option>
+                      <option value="stern">Stern</option>
+                      <option value="wilbur">Wilbur</option>
+                  </select
+                </td>
+                <td>
+                  <div id="mealPBox(saturday)"class="meal-content">
+                    <strong>Meals:&nbsp;</strong>
+                    <u id="mealP(saturday)" style="text-decoration: none;">
+                    </u>
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <th style="background-color: #eeeeee">Sunday</th>
+                <td>
+                  <select
+                    id="event(sunday)"
+                    style="width: 160px" /* Changed width to 160px */
+                    onchange="modselector(this)"
+                  >
+                    <option value="unknown"></option>
+                      <option value="arrillaga">Arillaga</option>
+                      <option value="branner">Branner</option>
+                      <option value="casper">Casper</option>
+                      <option value="evgr">Evgr</option>
+                      <option value="flomo">Flomo</option>
+                      <option value="lakeside">Lakeside</option>
+                      <option value="ricker">Ricker</option>
+                      <option value="stern">Stern</option>
+                      <option value="wilbur">Wilbur</option>
+                  </select
+                </td>
+                <td>
+                  <div id="mealPBox(sunday)"class="meal-content">
+                    <strong>Meals:&nbsp;</strong>
+                    <u id="mealP(sunday)" style="text-decoration: none;">
+                    </u>
+                </div>
+                </td>
+              </tr>
+            </table>
+
+            <div class="meal-option" style="text-align: center;">
+                <input type="button" value="Generate Meal Plan" id="generate" onclick="modbutton(this)">
+            </div>
+
+            
+    </div>
+
+    <textarea id="lambda" style="display: none">
+        value(nopref, true)
+        value(vegan, false)
+        value(vegetarian, false)
+        value(glutenFree, false)
+        value(halal, false)
+        value(lowCarb, false)
+        value(highCarb, false)
+        day(monday)
+        day(tuesday)
+        day(wednesday)
+        day(thursday)
+        day(friday)
+        day(saturday)
+        day(sunday)
+        diningHall(monday, "Jamaican Curry Chicken", arrillaga)
+        diningHall(monday, "Spaghetti And Meatballs", arrillaga)
+        diningHall(monday, "Jollof Rice", arrillaga)
+        diningHall(monday, "Fried Plantain", arrillaga)
+        diningHall(monday, "Chicken Soup", arrillaga)
+        diningHall(monday, "Tomato And Basil Tortellini", arrillaga)
+        diningHall(tuesday, "Beef Stew", arrillaga)
+        diningHall(tuesday, "Fried Artichoke Po Boy", arrillaga)
+        diningHall(tuesday, "Green Beans With Shallots", arrillaga)
+        diningHall(tuesday, "Steamed Vegtables", arrillaga)
+        diningHall(tuesday, "Yellow Spanish Rice", arrillaga)
+        diningHall(tuesday, "Yucca Fries", arrillaga)
+        diningHall(tuesday, "Pasta Pesto", arrillaga)
+        diningHall(wednesday, "Lemon Herbed Chicken", arrillaga)
+        diningHall(wednesday, "Kalua Pork", arrillaga)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", arrillaga)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", arrillaga)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", arrillaga)
+        diningHall(wednesday, "Garlic Noodles", arrillaga)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", arrillaga)
+        diningHall(wednesday, "Performance Bar", arrillaga)
+        diningHall(wednesday, "Pasta Marinara", arrillaga)
+        diningHall(thursday, "Tropical Jerk Chicken", arrillaga)
+        diningHall(thursday, "Fried Plantain", arrillaga)
+        diningHall(thursday, "Spicy Black Beans", arrillaga)
+        diningHall(thursday, "Hush Puppies", arrillaga)
+        diningHall(thursday, "Cauliflower Poblano Soup", arrillaga)
+        diningHall(thursday, "Pesto Tortellini Verdura", arrillaga)
+        diningHall(friday, "Thai Crispy Basa Fish", arrillaga)
+        diningHall(friday, "Roasted Turmeric Tofu", arrillaga)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", arrillaga)
+        diningHall(friday, "Pad Thai Noodles", arrillaga)
+        diningHall(friday, "Mountain Farm Gf Hamburger Bun", arrillaga)
+        diningHall(friday, "Chicken And Gnocchi Soup", arrillaga)
+        diningHall(friday, "Marinara Cheese Ravioli", arrillaga)
+        diningHall(saturday, "Carnitas", arrillaga)
+        diningHall(saturday, "Sizzlin Chickn Fajita", arrillaga)
+        diningHall(saturday, "Arroz Blanco", arrillaga)
+        diningHall(saturday, "Burrito Bar", arrillaga)
+        diningHall(saturday, "Corn Tortilla", arrillaga)
+        diningHall(saturday, "Pasta Alfredo", arrillaga)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", arrillaga)
+        diningHall(sunday, "Tofu Gising Gising", arrillaga)
+        diningHall(sunday, "Steamed Vegtables", arrillaga)
+        diningHall(sunday, "Vegtable Pancit", arrillaga)
+        diningHall(sunday, "Crunchy Veggie Lumpia", arrillaga)
+        diningHall(monday, "Jamaican Curry Chicken", branner)
+        diningHall(monday, "Spaghetti And Meatballs", branner)
+        diningHall(monday, "Jamaican Tofu Sandwich", branner)
+        diningHall(monday, "Jollof Rice", branner)
+        diningHall(monday, "Fried Plantain", branner)
+        diningHall(monday, "Chicken Soup", branner)
+        diningHall(monday, "Performance Bar", branner)
+        diningHall(tuesday, "Beef Stew", branner)
+        diningHall(tuesday, "Fried Artichoke Po Boy", branner)
+        diningHall(tuesday, "Mojo Tofu", branner)
+        diningHall(tuesday, "Green Beans With Shallots", branner)
+        diningHall(tuesday, "Steamed Vegtables", branner)
+        diningHall(tuesday, "Yellow Spanish Rice", branner)
+        diningHall(tuesday, "Yucca Fries", branner)
+        diningHall(tuesday, "Split Pea Soup", branner)
+        diningHall(tuesday, "Performance Bar", branner)
+        diningHall(tuesday, "Pasta Pesto", branner)
+        diningHall(wednesday, "Lemon Herbed Chicken", branner)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", branner)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", branner)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", branner)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", branner)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", branner)
+        diningHall(wednesday, "Garlic Noodles", branner)
+        diningHall(wednesday, "Performance Bar", branner)
+        diningHall(wednesday, "Pasta Marinara", branner)
+        diningHall(thursday, "Tropical Jerk Chicken", branner)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", branner)
+        diningHall(thursday, "Steamed Vegtables", branner)
+        diningHall(thursday, "Spicy Black Beans", branner)
+        diningHall(thursday, "Hush Puppies", branner)
+        diningHall(thursday, "Pesto Tortellini Verdura", branner)
+        diningHall(friday, "Thai Crispy Basa Fish", branner)
+        diningHall(friday, "Roasted Turmeric Tofu", branner)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", branner)
+        diningHall(friday, "Pad Thai Noodles", branner)
+        diningHall(friday, "Chicken And Gnocchi Soup", branner)
+        diningHall(friday, "Marinara Cheese Ravioli", branner)
+        diningHall(saturday, "Carnitas", branner)
+        diningHall(saturday, "Sizzlin Chickn Fajita", branner)
+        diningHall(saturday, "Charred Vegtables", branner)
+        diningHall(saturday, "Arroz Blanco", branner)
+        diningHall(saturday, "Corn Tortilla", branner)
+        diningHall(saturday, "Pasta Alfredo", branner)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", branner)
+        diningHall(sunday, "Tofu Gising Gising", branner)
+        diningHall(sunday, "Vegtable Pancit", branner)
+        diningHall(sunday, "Crunchy Veggie Lumpia", branner)
+        diningHall(sunday, "Pasta Marinara", branner)
+        diningHall(monday, "Spaghetti And Meatballs", evgr)
+        diningHall(monday, "Jamaican Tofu Sandwich", evgr)
+        diningHall(monday, "Braised Okra And Lentil Stew", evgr)
+        diningHall(monday, "Jollof Rice", evgr)
+        diningHall(monday, "Fried Plantain", evgr)
+        diningHall(monday, "Chicken Soup", evgr)
+        diningHall(monday, "Performance Bar", evgr)
+        diningHall(monday, "Tomato And Basil Tortellini", evgr)
+        diningHall(tuesday, "Fried Artichoke Po Boy", evgr)
+        diningHall(tuesday, "Mojo Tofu", evgr)
+        diningHall(tuesday, "Green Beans With Shallots", evgr)
+        diningHall(tuesday, "Steamed Vegtables", evgr)
+        diningHall(tuesday, "Yellow Spanish Rice", evgr)
+        diningHall(tuesday, "Yucca Fries", evgr)
+        diningHall(tuesday, "Split Pea Soup", evgr)
+        diningHall(tuesday, "Performance Bar", evgr)
+        diningHall(tuesday, "Pasta Pesto", evgr)
+        diningHall(wednesday, "Kalua Pork", evgr)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", evgr)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", evgr)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", evgr)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", evgr)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", evgr)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", evgr)
+        diningHall(wednesday, "Performance Bar", evgr)
+        diningHall(wednesday, "Pasta Marinara", evgr)
+        diningHall(thursday, "Tropical Jerk Chicken", evgr)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", evgr)
+        diningHall(thursday, "Fried Plantain", evgr)
+        diningHall(thursday, "Spicy Black Beans", evgr)
+        diningHall(thursday, "Hush Puppies", evgr)
+        diningHall(thursday, "Cauliflower Poblano Soup", evgr)
+        diningHall(thursday, "Pesto Tortellini Verdura", evgr)
+        diningHall(friday, "Roasted Turmeric Tofu", evgr)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", evgr)
+        diningHall(friday, "Pad Thai Noodles", evgr)
+        diningHall(friday, "Chicken And Gnocchi Soup", evgr)
+        diningHall(friday, "Marinara Cheese Ravioli", evgr)
+        diningHall(saturday, "Carnitas", evgr)
+        diningHall(saturday, "Sizzlin Chickn Fajita", evgr)
+        diningHall(saturday, "Charred Vegtables", evgr)
+        diningHall(saturday, "Arroz Blanco", evgr)
+        diningHall(saturday, "Burrito Bar", evgr)
+        diningHall(saturday, "Pasta Alfredo", evgr)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", evgr)
+        diningHall(sunday, "Tofu Gising Gising", evgr)
+        diningHall(sunday, "Garlic Napa Cabbage", evgr)
+        diningHall(sunday, "Steamed Vegtables", evgr)
+        diningHall(sunday, "Vegtable Pancit", evgr)
+        diningHall(sunday, "Crunchy Veggie Lumpia", evgr)
+        diningHall(sunday, "Pasta Marinara", evgr)
+        diningHall(monday, "Jamaican Curry Chicken", flomo)
+        diningHall(monday, "Spaghetti And Meatballs", flomo)
+        diningHall(monday, "Jamaican Tofu Sandwich", flomo)
+        diningHall(monday, "Jollof Rice", flomo)
+        diningHall(monday, "Fried Plantain", flomo)
+        diningHall(monday, "Chicken Soup", flomo)
+        diningHall(monday, "Performance Bar", flomo)
+        diningHall(monday, "Tomato And Basil Tortellini", flomo)
+        diningHall(tuesday, "Beef Stew", flomo)
+        diningHall(tuesday, "Fried Artichoke Po Boy", flomo)
+        diningHall(tuesday, "Mojo Tofu", flomo)
+        diningHall(tuesday, "Green Beans With Shallots", flomo)
+        diningHall(tuesday, "Steamed Vegtables", flomo)
+        diningHall(tuesday, "Yellow Spanish Rice", flomo)
+        diningHall(tuesday, "Yucca Fries", flomo)
+        diningHall(tuesday, "Split Pea Soup", flomo)
+        diningHall(tuesday, "Performance Bar", flomo)
+        diningHall(tuesday, "Pasta Pesto", flomo)
+        diningHall(wednesday, "Lemon Herbed Chicken", flomo)
+        diningHall(wednesday, "Kalua Pork", flomo)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", flomo)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", flomo)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", flomo)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", flomo)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", flomo)
+        diningHall(wednesday, "Garlic Noodles", flomo)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", flomo)
+        diningHall(wednesday, "Performance Bar", flomo)
+        diningHall(wednesday, "Pasta Marinara", flomo)
+        diningHall(thursday, "Tropical Jerk Chicken", flomo)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", flomo)
+        diningHall(thursday, "Fried Plantain", flomo)
+        diningHall(thursday, "Steamed Vegtables", flomo)
+        diningHall(thursday, "Spicy Black Beans", flomo)
+        diningHall(thursday, "Hush Puppies", flomo)
+        diningHall(thursday, "Cauliflower Poblano Soup", flomo)
+        diningHall(thursday, "Pesto Tortellini Verdura", flomo)
+        diningHall(friday, "Thai Crispy Basa Fish", flomo)
+        diningHall(friday, "Roasted Turmeric Tofu", flomo)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", flomo)
+        diningHall(friday, "Pad Thai Noodles", flomo)
+        diningHall(friday, "Mountain Farm Gf Hamburger Bun", flomo)
+        diningHall(friday, "Chicken And Gnocchi Soup", flomo)
+        diningHall(friday, "Marinara Cheese Ravioli", flomo)
+        diningHall(saturday, "Carnitas", flomo)
+        diningHall(saturday, "Sizzlin Chickn Fajita", flomo)
+        diningHall(saturday, "Charred Vegtables", flomo)
+        diningHall(saturday, "Arroz Blanco", flomo)
+        diningHall(saturday, "Burrito Bar", flomo)
+        diningHall(saturday, "Corn Tortilla", flomo)
+        diningHall(saturday, "Pasta Alfredo", flomo)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", flomo)
+        diningHall(sunday, "Tofu Gising Gising", flomo)
+        diningHall(sunday, "Garlic Napa Cabbage", flomo)
+        diningHall(sunday, "Steamed Vegtables", flomo)
+        diningHall(sunday, "Vegtable Pancit", flomo)
+        diningHall(sunday, "Crunchy Veggie Lumpia", flomo)
+        diningHall(sunday, "Pasta Marinara", flomo)
+        diningHall(monday, "Jamaican Curry Chicken", casper)
+        diningHall(monday, "Spaghetti And Meatballs", casper)
+        diningHall(monday, "Jamaican Tofu Sandwich", casper)
+        diningHall(monday, "Braised Okra And Lentil Stew", casper)
+        diningHall(monday, "Jollof Rice", casper)
+        diningHall(monday, "Fried Plantain", casper)
+        diningHall(monday, "Chicken Soup", casper)
+        diningHall(monday, "Performance Bar", casper)
+        diningHall(monday, "Tomato And Basil Tortellini", casper)
+        diningHall(tuesday, "Beef Stew", casper)
+        diningHall(tuesday, "Fried Artichoke Po Boy", casper)
+        diningHall(tuesday, "Mojo Tofu", casper)
+        diningHall(tuesday, "Green Beans With Shallots", casper)
+        diningHall(tuesday, "Steamed Vegtables", casper)
+        diningHall(tuesday, "Yellow Spanish Rice", casper)
+        diningHall(tuesday, "Yucca Fries", casper)
+        diningHall(tuesday, "Split Pea Soup", casper)
+        diningHall(tuesday, "Performance Bar", casper)
+        diningHall(tuesday, "Pasta Pesto", casper)
+        diningHall(wednesday, "Lemon Herbed Chicken", casper)
+        diningHall(wednesday, "Kalua Pork", casper)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", casper)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", casper)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", casper)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", casper)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", casper)
+        diningHall(wednesday, "Garlic Noodles", casper)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", casper)
+        diningHall(wednesday, "Performance Bar", casper)
+        diningHall(wednesday, "Pasta Marinara", casper)
+        diningHall(thursday, "Tropical Jerk Chicken", casper)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", casper)
+        diningHall(thursday, "Fried Plantain", casper)
+        diningHall(thursday, "Steamed Vegtables", casper)
+        diningHall(thursday, "Spicy Black Beans", casper)
+        diningHall(thursday, "Hush Puppies", casper)
+        diningHall(thursday, "Cauliflower Poblano Soup", casper)
+        diningHall(thursday, "Pesto Tortellini Verdura", casper)
+        diningHall(friday, "Thai Crispy Basa Fish", casper)
+        diningHall(friday, "Roasted Turmeric Tofu", casper)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", casper)
+        diningHall(friday, "Pad Thai Noodles", casper)
+        diningHall(friday, "Mountain Farm Gf Hamburger Bun", casper)
+        diningHall(friday, "Chicken And Gnocchi Soup", casper)
+        diningHall(friday, "Marinara Cheese Ravioli", casper)
+        diningHall(saturday, "Carnitas", casper)
+        diningHall(saturday, "Sizzlin Chickn Fajita", casper)
+        diningHall(saturday, "Charred Vegtables", casper)
+        diningHall(saturday, "Arroz Blanco", casper)
+        diningHall(saturday, "Burrito Bar", casper)
+        diningHall(saturday, "Corn Tortilla", casper)
+        diningHall(saturday, "Pasta Alfredo", casper)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", casper)
+        diningHall(sunday, "Tofu Gising Gising", casper)
+        diningHall(sunday, "Garlic Napa Cabbage", casper)
+        diningHall(sunday, "Steamed Vegtables", casper)
+        diningHall(sunday, "Vegtable Pancit", casper)
+        diningHall(sunday, "Crunchy Veggie Lumpia", casper)
+        diningHall(sunday, "Pasta Marinara", casper)
+        diningHall(monday, "Jamaican Curry Chicken", lakeside)
+        diningHall(monday, "Spaghetti And Meatballs", lakeside)
+        diningHall(monday, "Jamaican Tofu Sandwich", lakeside)
+        diningHall(monday, "Braised Okra And Lentil Stew", lakeside)
+        diningHall(monday, "Jollof Rice", lakeside)
+        diningHall(monday, "Fried Plantain", lakeside)
+        diningHall(monday, "Chicken Soup", lakeside)
+        diningHall(monday, "Performance Bar", lakeside)
+        diningHall(monday, "Tomato And Basil Tortellini", lakeside)
+        diningHall(tuesday, "Beef Stew", lakeside)
+        diningHall(tuesday, "Fried Artichoke Po Boy", lakeside)
+        diningHall(tuesday, "Mojo Tofu", lakeside)
+        diningHall(tuesday, "Green Beans With Shallots", lakeside)
+        diningHall(tuesday, "Steamed Vegtables", lakeside)
+        diningHall(tuesday, "Yellow Spanish Rice", lakeside)
+        diningHall(tuesday, "Yucca Fries", lakeside)
+        diningHall(tuesday, "Split Pea Soup", lakeside)
+        diningHall(tuesday, "Performance Bar", lakeside)
+        diningHall(tuesday, "Pasta Pesto", lakeside)
+        diningHall(wednesday, "Lemon Herbed Chicken", lakeside)
+        diningHall(wednesday, "Kalua Pork", lakeside)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", lakeside)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", lakeside)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", lakeside)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", lakeside)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", lakeside)
+        diningHall(wednesday, "Garlic Noodles", lakeside)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", lakeside)
+        diningHall(wednesday, "Performance Bar", lakeside)
+        diningHall(wednesday, "Pasta Marinara", lakeside)
+        diningHall(thursday, "Tropical Jerk Chicken", lakeside)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", lakeside)
+        diningHall(thursday, "Fried Plantain", lakeside)
+        diningHall(thursday, "Steamed Vegtables", lakeside)
+        diningHall(thursday, "Spicy Black Beans", lakeside)
+        diningHall(thursday, "Hush Puppies", lakeside)
+        diningHall(thursday, "Cauliflower Poblano Soup", lakeside)
+        diningHall(thursday, "Pesto Tortellini Verdura", lakeside)
+        diningHall(friday, "Thai Crispy Basa Fish", lakeside)
+        diningHall(friday, "Roasted Turmeric Tofu", lakeside)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", lakeside)
+        diningHall(friday, "Pad Thai Noodles", lakeside)
+        diningHall(friday, "Mountain Farm Gf Hamburger Bun", lakeside)
+        diningHall(friday, "Chicken And Gnocchi Soup", lakeside)
+        diningHall(friday, "Marinara Cheese Ravioli", lakeside)
+        diningHall(saturday, "Carnitas", lakeside)
+        diningHall(saturday, "Sizzlin Chickn Fajita", lakeside)
+        diningHall(saturday, "Charred Vegtables", lakeside)
+        diningHall(saturday, "Arroz Blanco", lakeside)
+        diningHall(saturday, "Burrito Bar", lakeside)
+        diningHall(saturday, "Corn Tortilla", lakeside)
+        diningHall(saturday, "Pasta Alfredo", lakeside)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", lakeside)
+        diningHall(sunday, "Tofu Gising Gising", lakeside)
+        diningHall(sunday, "Garlic Napa Cabbage", lakeside)
+        diningHall(sunday, "Steamed Vegtables", lakeside)
+        diningHall(sunday, "Vegtable Pancit", lakeside)
+        diningHall(sunday, "Crunchy Veggie Lumpia", lakeside)
+        diningHall(sunday, "Pasta Marinara", lakeside)
+        diningHall(monday, "Jamaican Curry Chicken", ricker)
+        diningHall(monday, "Spaghetti And Meatballs", ricker)
+        diningHall(monday, "Jamaican Tofu Sandwich", ricker)
+        diningHall(monday, "Braised Okra And Lentil Stew", ricker)
+        diningHall(monday, "Jollof Rice", ricker)
+        diningHall(monday, "Fried Plantain", ricker)
+        diningHall(monday, "Chicken Soup", ricker)
+        diningHall(monday, "Performance Bar", ricker)
+        diningHall(monday, "Tomato And Basil Tortellini", ricker)
+        diningHall(tuesday, "Beef Stew", ricker)
+        diningHall(tuesday, "Fried Artichoke Po Boy", ricker)
+        diningHall(tuesday, "Mojo Tofu", ricker)
+        diningHall(tuesday, "Green Beans With Shallots", ricker)
+        diningHall(tuesday, "Steamed Vegtables", ricker)
+        diningHall(tuesday, "Yellow Spanish Rice", ricker)
+        diningHall(tuesday, "Yucca Fries", ricker)
+        diningHall(tuesday, "Split Pea Soup", ricker)
+        diningHall(tuesday, "Performance Bar", ricker)
+        diningHall(tuesday, "Pasta Pesto", ricker)
+        diningHall(wednesday, "Lemon Herbed Chicken", ricker)
+        diningHall(wednesday, "Kalua Pork", ricker)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", ricker)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", ricker)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", ricker)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", ricker)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", ricker)
+        diningHall(wednesday, "Garlic Noodles", ricker)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", ricker)
+        diningHall(wednesday, "Performance Bar", ricker)
+        diningHall(wednesday, "Pasta Marinara", ricker)
+        diningHall(thursday, "Tropical Jerk Chicken", ricker)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", ricker)
+        diningHall(thursday, "Fried Plantain", ricker)
+        diningHall(thursday, "Steamed Vegtables", ricker)
+        diningHall(thursday, "Spicy Black Beans", ricker)
+        diningHall(thursday, "Hush Puppies", ricker)
+        diningHall(thursday, "Cauliflower Poblano Soup", ricker)
+        diningHall(thursday, "Pesto Tortellini Verdura", ricker)
+        diningHall(friday, "Thai Crispy Basa Fish", ricker)
+        diningHall(friday, "Roasted Turmeric Tofu", ricker)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", ricker)
+        diningHall(friday, "Pad Thai Noodles", ricker)
+        diningHall(friday, "Mountain Farm Gf Hamburger Bun", ricker)
+        diningHall(friday, "Chicken And Gnocchi Soup", ricker)
+        diningHall(friday, "Marinara Cheese Ravioli", ricker)
+        diningHall(saturday, "Carnitas", ricker)
+        diningHall(saturday, "Sizzlin Chickn Fajita", ricker)
+        diningHall(saturday, "Charred Vegtables", ricker)
+        diningHall(saturday, "Arroz Blanco", ricker)
+        diningHall(saturday, "Burrito Bar", ricker)
+        diningHall(saturday, "Corn Tortilla", ricker)
+        diningHall(saturday, "Pasta Alfredo", ricker)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", ricker)
+        diningHall(sunday, "Tofu Gising Gising", ricker)
+        diningHall(sunday, "Garlic Napa Cabbage", ricker)
+        diningHall(sunday, "Steamed Vegtables", ricker)
+        diningHall(sunday, "Vegtable Pancit", ricker)
+        diningHall(sunday, "Crunchy Veggie Lumpia", ricker)
+        diningHall(sunday, "Pasta Marinara", ricker)
+        diningHall(monday, "Jamaican Curry Chicken", stern)
+        diningHall(monday, "Spaghetti And Meatballs", stern)
+        diningHall(monday, "Jamaican Tofu Sandwich", stern)
+        diningHall(monday, "Braised Okra And Lentil Stew", stern)
+        diningHall(monday, "Jollof Rice", stern)
+        diningHall(monday, "Fried Plantain", stern)
+        diningHall(monday, "Chicken Soup", stern)
+        diningHall(monday, "Performance Bar", stern)
+        diningHall(monday, "Tomato And Basil Tortellini", stern)
+        diningHall(tuesday, "Beef Stew", stern)
+        diningHall(tuesday, "Fried Artichoke Po Boy", stern)
+        diningHall(tuesday, "Mojo Tofu", stern)
+        diningHall(tuesday, "Green Beans With Shallots", stern)
+        diningHall(tuesday, "Steamed Vegtables", stern)
+        diningHall(tuesday, "Yellow Spanish Rice", stern)
+        diningHall(tuesday, "Yucca Fries", stern)
+        diningHall(tuesday, "Split Pea Soup", stern)
+        diningHall(tuesday, "Performance Bar", stern)
+        diningHall(tuesday, "Pasta Pesto", stern)
+        diningHall(wednesday, "Lemon Herbed Chicken", stern)
+        diningHall(wednesday, "Kalua Pork", stern)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", stern)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", stern)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", stern)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", stern)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", stern)
+        diningHall(wednesday, "Garlic Noodles", stern)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", stern)
+        diningHall(wednesday, "Performance Bar", stern)
+        diningHall(wednesday, "Pasta Marinara", stern)
+        diningHall(thursday, "Tropical Jerk Chicken", stern)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", stern)
+        diningHall(thursday, "Fried Plantain", stern)
+        diningHall(thursday, "Steamed Vegtables", stern)
+        diningHall(thursday, "Spicy Black Beans", stern)
+        diningHall(thursday, "Hush Puppies", stern)
+        diningHall(thursday, "Cauliflower Poblano Soup", stern)
+        diningHall(thursday, "Pesto Tortellini Verdura", stern)
+        diningHall(friday, "Thai Crispy Basa Fish", stern)
+        diningHall(friday, "Roasted Turmeric Tofu", stern)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", stern)
+        diningHall(friday, "Pad Thai Noodles", stern)
+        diningHall(friday, "Mountain Farm Gf Hamburger Bun", stern)
+        diningHall(friday, "Chicken And Gnocchi Soup", stern)
+        diningHall(friday, "Marinara Cheese Ravioli", stern)
+        diningHall(saturday, "Carnitas", stern)
+        diningHall(saturday, "Sizzlin Chickn Fajita", stern)
+        diningHall(saturday, "Charred Vegtables", stern)
+        diningHall(saturday, "Arroz Blanco", stern)
+        diningHall(saturday, "Burrito Bar", stern)
+        diningHall(saturday, "Corn Tortilla", stern)
+        diningHall(saturday, "Pasta Alfredo", stern)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", stern)
+        diningHall(sunday, "Tofu Gising Gising", stern)
+        diningHall(sunday, "Garlic Napa Cabbage", stern)
+        diningHall(sunday, "Steamed Vegtables", stern)
+        diningHall(sunday, "Vegtable Pancit", stern)
+        diningHall(sunday, "Crunchy Veggie Lumpia", stern)
+        diningHall(sunday, "Pasta Marinara", stern)
+        diningHall(monday, "Jamaican Curry Chicken", wilbur)
+        diningHall(monday, "Spaghetti And Meatballs", wilbur)
+        diningHall(monday, "Jamaican Tofu Sandwich", wilbur)
+        diningHall(monday, "Braised Okra And Lentil Stew", wilbur)
+        diningHall(monday, "Jollof Rice", wilbur)
+        diningHall(monday, "Fried Plantain", wilbur)
+        diningHall(monday, "Chicken Soup", wilbur)
+        diningHall(monday, "Performance Bar", wilbur)
+        diningHall(monday, "Tomato And Basil Tortellini", wilbur)
+        diningHall(tuesday, "Beef Stew", wilbur)
+        diningHall(tuesday, "Fried Artichoke Po Boy", wilbur)
+        diningHall(tuesday, "Mojo Tofu", wilbur)
+        diningHall(tuesday, "Green Beans With Shallots", wilbur)
+        diningHall(tuesday, "Steamed Vegtables", wilbur)
+        diningHall(tuesday, "Yellow Spanish Rice", wilbur)
+        diningHall(tuesday, "Yucca Fries", wilbur)
+        diningHall(tuesday, "Split Pea Soup", wilbur)
+        diningHall(tuesday, "Performance Bar", wilbur)
+        diningHall(tuesday, "Pasta Pesto", wilbur)
+        diningHall(wednesday, "Lemon Herbed Chicken", wilbur)
+        diningHall(wednesday, "Kalua Pork", wilbur)
+        diningHall(wednesday, "Cacciatore Pasta With Spinach", wilbur)
+        diningHall(wednesday, "Roasted Broccolini With Tomatoes", wilbur)
+        diningHall(wednesday, "Lemon Herb Roasted Potatoes", wilbur)
+        diningHall(wednesday, "Gluten Free Dinner Rolls", wilbur)
+        diningHall(wednesday, "Assorted Dinner Rolls With Butter", wilbur)
+        diningHall(wednesday, "Garlic Noodles", wilbur)
+        diningHall(wednesday, "Spicy Pumpkin Coconut Bisque", wilbur)
+        diningHall(wednesday, "Performance Bar", wilbur)
+        diningHall(wednesday, "Pasta Marinara", wilbur)
+        diningHall(thursday, "Tropical Jerk Chicken", wilbur)
+        diningHall(thursday, "Jerk Chili And Pineapple Salsa", wilbur)
+        diningHall(thursday, "Fried Plantain", wilbur)
+        diningHall(thursday, "Steamed Vegtables", wilbur)
+        diningHall(thursday, "Spicy Black Beans", wilbur)
+        diningHall(thursday, "Hush Puppies", wilbur)
+        diningHall(thursday, "Cauliflower Poblano Soup", wilbur)
+        diningHall(thursday, "Pesto Tortellini Verdura", wilbur)
+        diningHall(friday, "Thai Crispy Basa Fish", wilbur)
+        diningHall(friday, "Roasted Turmeric Tofu", wilbur)
+        diningHall(friday, "Fiery Chili Garlic Green Beans", wilbur)
+        diningHall(friday, "Pad Thai Noodles", wilbur)
+        diningHall(friday, "Mountain Farm Gf Hamburger Bun", wilbur)
+        diningHall(friday, "Chicken And Gnocchi Soup", wilbur)
+        diningHall(friday, "Marinara Cheese Ravioli", wilbur)
+        diningHall(saturday, "Carnitas", wilbur)
+        diningHall(saturday, "Sizzlin Chickn Fajita", wilbur)
+        diningHall(saturday, "Charred Vegtables", wilbur)
+        diningHall(saturday, "Arroz Blanco", wilbur)
+        diningHall(saturday, "Burrito Bar", wilbur)
+        diningHall(saturday, "Corn Tortilla", wilbur)
+        diningHall(saturday, "Pasta Alfredo", wilbur)
+        diningHall(sunday, "Chicken With Filipino Adobo Sauce", wilbur)
+        diningHall(sunday, "Tofu Gising Gising", wilbur)
+        diningHall(sunday, "Garlic Napa Cabbage", wilbur)
+        diningHall(sunday, "Steamed Vegtables", wilbur)
+        diningHall(sunday, "Vegtable Pancit", wilbur)
+        diningHall(sunday, "Crunchy Veggie Lumpia", wilbur)
+        diningHall(sunday, "Pasta Marinara", wilbur)
+        halal("Jamaican Curry Chicken")
+        halal("Spaghetti And Meatballs")
+        halal("Jamaican Tofu Sandwich")
+        halal("Mojo Tofu")
+        halal("Steamed Vegtables")
+        halal("Yellow Spanish Rice")
+        halal("Split Pea Soup")
+        halal("Lemon Herbed Chicken")
+        halal("Cacciatore Pasta With Spinach")
+        halal("Roasted Broccolini With Tomatoes")
+        halal("Lemon Herb Roasted Potatoes")
+        halal("Gluten Free Dinner Rolls")
+        halal("Assorted Dinner Rolls With Butter")
+        halal("Garlic Noodles")
+        halal("Pasta Marinara")
+        halal("Tropical Jerk Chicken")
+        halal("Jerk Chili And Pineapple Salsa")
+        halal("Spicy Black Beans")
+        halal("Cauliflower Poblano Soup")
+        halal("Roasted Turmeric Tofu")
+        halal("Fiery Chili Garlic Green Beans")
+        halal("Pad Thai Noodles")
+        halal("Mountain Farm Gf Hamburger Bun")
+        halal("Marinara Cheese Ravioli")
+        halal("Sizzlin Chickn Fajita")
+        halal("Charred Vegtables")
+        halal("Arroz Blanco")
+        halal("Corn Tortilla")
+        halal("Pasta Alfredo")
+        halal("Chicken With Filipino Adobo Sauce")
+        halal("Tofu Gising Gising")
+        halal("Vegtable Pancit")
+        halal("Crunchy Veggie Lumpia")
+        gf("Jamaican Curry Chicken")
+        gf("Braised Okra And Lentil Stew")
+        gf("Steamed Vegtables")
+        gf("Beef Stew")
+        gf("Mojo Tofu")
+        gf("Yellow Spanish Rice")
+        gf("Split Pea Soup")
+        gf("Lemon Herbed Chicken")
+        gf("Gluten Free Dinner Rolls")
+        gf("Roasted Broccolini With Tomatoes")
+        gf("Lemon Herbed Chicken")
+        gf("Kalua Pork")
+        gf("Spicy Pumpkin Coconut Bisque")
+        gf("Tropical Jerk Chicken")
+        gf("Jerk Chili And Pineapple Salsa")
+        gf("Spicy Black Beans")
+        gf("Cauliflower Poblano Soup")
+        gf("Roasted Turmeric Tofu")
+        gf("Mountain Farm Gf Hamburger Bun")
+        gf("Carnitas")
+        gf("Charred Vegtables")
+        gf("Arroz Blanco")
+        gf("Corn Tortilla")
+        gf("Chicken With Filipino Adobo Sauce")
+        gf("Tofu Gising Gising")
+        gf("Garlic Napa Cabbage")
+        v("Braised Okra And Lentil Stew")
+        v("Steamed Vegtables")
+        v("Jollof Rice")
+        v("Fried Plantain")
+        v("Fried Artichoke Po Boy")
+        v("Mojo Tofu")
+        v("Green Beans With Shallots")
+        v("Yellow Spanish Rice")
+        v("Yucca Fries")
+        v("Split Pea Soup")
+        v("Pasta Pesto")
+        v("Cacciatore Pasta With Spinach")
+        v("Roasted Broccolini With Tomatoes")
+        v("Gluten Free Dinner Rolls")
+        v("Assorted Dinner Rolls With Butter")
+        v("Garlic Noodles")
+        v("Spicy Pumpkin Coconut Bisque")
+        v("Pasta Marinara")
+        v("Jerk Chili And Pineapple Salsa")
+        v("Spicy Black Beans")
+        v("Hush Puppies")
+        v("Cauliflower Poblano Soup")
+        v("Roasted Turmeric Tofu")
+        v("Fiery Chili Garlic Green Beans")
+        v("Pad Thai Noodles")
+        v("Mountain Farm Gf Hamburger Bun")
+        v("Marinara Cheese Ravioli")
+        v("Sizzlin Chickn Fajita")
+        v("Charred Vegtables")
+        v("Arroz Blanco")
+        v("Corn Tortilla")
+        v("Pasta Alfredo")
+        v("Tofu Gising Gising")
+        v("Garlic Napa Cabbage")
+        v("Vegtable Pancit")
+        v("Crunchy Veggie Lumpia")
+        vgn("Braised Okra And Lentil Stew")
+        vgn("Steamed Vegtables")
+        vgn("Jollof Rice")
+        vgn("Fried Plantain")
+        vgn("Mojo Tofu")
+        vgn("Green Beans With Shallots")
+        vgn("Yellow Spanish Rice")
+        vgn("Yucca Fries")
+        vgn("Split Pea Soup")
+        vgn("Cacciatore Pasta With Spinach")
+        vgn("Roasted Broccolini With Tomatoes")
+        vgn("Lemon Herb Roasted Potatoes")
+        vgn("Gluten Free Dinner Rolls")
+        vgn("Spicy Pumpkin Coconut Bisque")
+        vgn("Pasta Marinara")
+        vgn("Jerk Chili And Pineapple Salsa")
+        vgn("Fried Plantain")
+        vgn("Spicy Black Beans")
+        vgn("Roasted Turmeric Tofu")
+        vgn("Fiery Chili Garlic Green Beans")
+        vgn("Pad Thai Noodles")
+        vgn("Mountain Farm Gf Hamburger Bun")
+        vgn("Sizzlin Chickn Fajita")
+        vgn("Charred Vegtables")
+        vgn("Arroz Blanco")
+        vgn("Corn Tortilla")
+        vgn("Tofu Gising Gising")
+        vgn("Garlic Napa Cabbage")
+        vgn("Vegtable Pancit")
+        vgn("Crunchy Veggie Lumpia")
+        hp("Jamaican Curry Chicken")
+        hp("Spaghetti And Meatballs")
+        hp("Chicken Soup")
+        hp("Beef Stew")
+        hp("Lemon Herbed Chicken")
+        hp("Kalua Pork")
+        hp("Tropical Jerk Chicken")
+        hp("Spicy Black Beans")
+        hp("Thai Crispy Basa Fish")
+        hp("Roasted Turmeric Tofu")
+        hp("Carnitas")
+        hp("Sizzlin Chickn Fajita")
+        hp("Chicken With Filipino Adobo Sauce")
+        hp("Tofu Gising Gising")
+        lc("Jamaican Curry Chicken")
+        lc("Chicken Soup")
+        lc("Mojo Tofu")
+        lc("Green Beans With Shallots")
+        lc("Steamed Vegtables")
+        lc("Yucca Fries")
+        lc("Lemon Herbed Chicken")
+        lc("Kalua Pork")
+        lc("Roasted Broccolini With Tomatoes")
+        lc("Spicy Pumpkin Coconut Bisque")
+        lc("Tropical Jerk Chicken")
+        lc("Jerk Chili And Pineapple Salsa")
+        lc("Spicy Black Beans")
+        lc("Cauliflower Poblano Soup")
+        lc("Thai Crispy Basa Fish")
+        lc("Roasted Turmeric Tofu")
+        lc("Fiery Chili Garlic Green Beans")
+        lc("Chicken And Gnocchi Soup")
+        lc("Carnitas")
+        lc("Sizzlin Chickn Fajita")
+        lc("Charred Vegtables")
+        lc("Chicken With Filipino Adobo Sauce")
+        lc("Tofu Gising Gising")
+        lc("Garlic Napa Cabbage")
+        hc("Spaghetti And Meatballs")
+        hc("Jollof Rice")
+        hc("Fried Plantain")
+        hc("Tomato And Basil Tortellini")
+        hc("Fried Artichoke Po Boy")
+        hc("Yellow Spanish Rice")
+        hc("Pasta Pesto")
+        hc("Cacciatore Pasta With Spinach")
+        hc("Lemon Herb Roasted Potatoes")
+        hc("Gluten Free Dinner Rolls")
+        hc("Assorted Dinner Rolls With Butter")
+        hc("Garlic Noodles")
+        hc("Pasta Marinara")
+        hc("Hush Puppies")
+        hc("Pesto Tortellini Verdura")
+        hc("Pad Thai Noodles")
+        hc("Mountain Farm Gf Hamburger Bun")
+        hc("Marinara Cheese Ravioli")
+        hc("Arroz Blanco")
+        hc("Burrito Bar")
+        hc("Corn Tortilla")
+        hc("Pasta Alfredo")
+        hc("Vegtable Pancit")
+        hc("Crunchy Veggie Lumpia")
+        meal("Arroz Blanco")
+        meal("Jollof Rice")
+        meal("Fried Plantain")
+        meal("Burrito Bar")
+        meal("Braised Okra And Lentil Stew")
+        meal("Mountain Farm Gf Hamburger Bun")
+        meal("Roasted Turmeric Tofu")
+        meal("Chicken With Filipino Adobo Sauce")
+        meal("Corn Tortilla")
+        meal("Jamaican Curry Chicken")
+        meal("Assorted Dinner Rolls With Butter")
+        meal("Garlic Napa Cabbage")
+        meal("Fiery Chili Garlic Green Beans")
+        meal("Sizzlin Chickn Fajita")
+        meal("Green Beans With Shallots")
+        meal("Split Pea Soup")
+        meal("Roasted Broccolini With Tomatoes")
+        meal("Pesto Tortellini Verdura")
+        meal("Spicy Black Beans")
+        meal("Vegtable Pancit")
+        meal("Tofu Gising Gising")
+        meal("Fried Artichoke Po Boy")
+        meal("Performance Bar")
+        meal("Cauliflower Poblano Soup")
+        meal("Spicy Pumpkin Coconut Bisque")
+        meal("Jerk Chili And Pineapple Salsa")
+        meal("Yucca Fries")
+        meal("Chicken And Gnocchi Soup")
+        meal("Carnitas")
+        meal("Charred Vegtables")
+        meal("Cacciatore Pasta With Spinach")
+        meal("Crunchy Veggie Lumpia")
+        meal("Chicken Soup")
+        meal("Tomato And Basil Tortellini")
+        meal("Mojo Tofu")
+        meal("Garlic Noodles")
+        meal("Kalua Pork")
+        meal("Pasta Alfredo")
+        meal("Beef Stew")
+        meal("Lemon Herbed Chicken")
+        meal("Spaghetti And Meatballs")
+        meal("Hush Puppies")
+        meal("Jamaican Tofu Sandwich")
+        meal("Pasta Pesto")
+        meal("Lemon Herb Roasted Potatoes")
+        meal("Pad Thai Noodles")
+        meal("Marinara Cheese Ravioli")
+        meal("Yellow Spanish Rice")
+        meal("Thai Crispy Basa Fish")
+        meal("Pasta Marinara")
+        meal("Tropical Jerk Chicken")
+        meal("Gluten Free Dinner Rolls")
+        meal("Steamed Vegtables")
+
+
+    </textarea>
+    <textarea id="library" type="text/hrf" style="display: none">
+        
+        select(nopref, true) :: value(nopref, true) & ~value(nopref, false) & select(vegan, false) & select(vegetarian, false) & select(glutenFree, false) & select(halal, false) & select(lowCarb, false)  & select(highCarb, false)
+
+        select(X, true) :: ~evaluate(X, nopref) ==> value(nopref, false) & ~value(nopref, true) & value(X, true) & ~value(X, false)
+
+        select(X, false) :: ~value(X, true) & value(X, false) 
+
+        select(lowCarb, true) :: value(lowCarb, false) & ~value(lowCarb, true) & select(highCarb, false)
+        select(highCarb, true) :: value(lowCarb, false) & ~value(lowCarb, true) & select(highCarb, false)
+        
+        select(vegan, true) :: isVegan()
+        select(vegan, false) :: isVegan() ==> ~isVegan()
+        satisfiesVegan(Meal) :- isVegan() & vgn(Meal)
+        satisfiesVegan(Meal) :- ~isVegan() & meal(Meal)
+
+        select(vegetarian, true) :: isVegetarian()
+        select(vegetarian, false) :: isVegetarian() ==> ~isVegetarian()
+        satisfiesVegetarian(Meal) :- isVegetarian() & v(Meal)
+        satisfiesVegetarian(Meal) :- ~isVegetarian() & meal(Meal)
+
+        select(glutenFree, true) :: isGlutenFree()
+        select(glutenFree, false) :: isGlutenFree() ==> ~isGlutenFree()
+        satisfiesGlutenFree(Meal) :- isGlutenFree() & gf(Meal) & meal(Meal)
+        satisfiesGlutenFree(Meal) :- ~isGlutenFree() & meal(Meal)
+
+        select(halal, true) :: isHalal()
+        select(halal, false) :: isHalal() ==> ~isHalal()
+        satisfiesHalal(Meal) :- isHalal() & halal(Meal) & meal(Meal)
+        satisfiesHalal(Meal) :- ~isHalal() & meal(Meal)
+
+        select(lowCarb, true) :: isLowCarb()
+        select(lowCarb, false) :: isLowCarb() ==> ~isLowCarb()
+        satisfiesLowCarb(Meal) :- isLowCarb() & lc(Meal) & meal(Meal)
+        satisfiesLowCarb(Meal) :- ~isLowCarb() & meal(Meal)
+
+        select(highCarb, true) :: isHighCarb()
+        select(highCarb, false) :: isHighCarb() ==> ~isHighCarb()
+        satisfiesHighCarb(Meal) :- isHighCarb() & hc(Meal) & meal(Meal)
+        satisfiesHighCarb(Meal) :- ~isHighCarb() & meal(Meal)
+
+        select(Y,X) :: value(Y,X)
+        select(Z,X) :: value(Z,Y) ==> ~value(Z,Y)
+ 
+
+        innerhtml(diningHallName, X) :- value(diningHallSelect, X)
+        innerhtml(dayName, X) :- value(daySelect,X)
+
+        style(mealPBox(DAY), visibility, hidden)
+        style(mealPBox(DAY), visibility, visible) :- click(generate) & value(event(DAY), X) & ~evaluate(X, unknown)
+
+        innerhtml(mealP(DAY), Meals) :- click(generate) &
+        value(event(DAY),DiningHallName) &
+        evaluate(setofall(Meal, diningHall(DAY, Meal, DiningHallName) & satisfiesVegan(Meal) & satisfiesVegetarian(Meal) & satisfiesGlutenFree(Meal) & satisfiesHalal(Meal) & satisfiesLowCarb(Meal) & satisfiesHighCarb(Meal)), X) & 
+        evaluate(stringjoin(X), Meals)
+
+    </textarea>
+    <center>
+
+  </body>
+</html>
